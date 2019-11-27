@@ -67,7 +67,10 @@ container.click(function () {
         method: "GET"
     }).then(function (response) {
         console.log(response);
-        
+        $("#weatherData").append($("<h1>").text(response.name));
+        $("#weatherData").append($("<p>").text("Temperature: " + response.main.temp));
+        $("#weatherData").append($("<p>").text("Humidity: " + response.main.humidity));
+        $("#weatherData").append($("<p>").text("Wind Speed: " + response.wind.speed));
     });
 
     }
