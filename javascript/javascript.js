@@ -3,8 +3,6 @@ var header = $("#header");
 var container = $(".container-fluid");
 var userSearchList = $("<ul>");
 
-
-
 //Adding text to header
 h1.text("Weather Map").addClass("header");
 header.append(h1);
@@ -51,29 +49,44 @@ $("#columnTwo").append($("<div>").addClass("row").attr("id", "fiveDayForecast"))
 //click event on the container area below jumbotron
 container.click(function () {
     var cityName = $("#userInput").val();
-    console.log(cityName);
-    console.log(event);
     var APIKey = "21a347a444e91fd3f7484f44867c287b";
     var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid=" + APIKey;
-    
+    console.log(cityName);
+    console.log(event);
+
+    //if statement that executes the ajax queries if the search icon is clicked on
     if (event.target.tagName === "I") {
+        
         var userSearch = $("<button>");
         userSearch.text(cityName);
         userSearchList.append($("<li>").append(userSearch));
 
-        //Ajax query is the code that sends the request to the weather API for the data.
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function (response) {
-        console.log(response);
-        $("#weatherData").append($("<h1>").text(response.name));
-        $("#weatherData").append($("<p>").text("Temperature: " + response.main.temp));
-        $("#weatherData").append($("<p>").text("Humidity: " + response.main.humidity));
-        $("#weatherData").append($("<p>").text("Wind Speed: " + response.wind.speed));
-    });
+        //Ajax query that requests the temperature, humidity, and wind speed for weather data div.
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (respWeatherData) {
+            var lat = respWeatherData.coord.lat;
+            var long = respWeatherData.coord.lon;
+            var queryUVI = "http://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey + "&lat=" + lat + "&lon=" + long;
+            console.log(lat);
+            console.log(long);
+            console.log(respWeatherData);
+            $("#weatherData").append($("<h1>").text(respWeatherData.name));
+            $("#weatherData").append($("<p>").text("Temperature: " + respWeatherData.main.temp));
+            $("#weatherData").append($("<p>").text("Humidity: " + respWeatherData.main.humidity));
+            $("#weatherData").append($("<p>").text("Wind Speed: " + respWeatherData.wind.speed));
+
+            $.ajax({
+                url: queryUVI,
+                method: "GET"
+            }).then(function (respUvi) {
+                console.log(respUvi);
+                $("#weatherData").append($("<p>").text("UV Index: " + respUvi.value));
+            });
+           
+        });
 
     }
-
 });
 
