@@ -48,45 +48,74 @@ $("#columnTwo").append($("<div>").addClass("row").attr("id", "fiveDayForecast"))
 
 //click event on the container area below jumbotron
 container.click(function () {
-    var cityName = $("#userInput").val();
+    
     var APIKey = "21a347a444e91fd3f7484f44867c287b";
-    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=imperial&appid=" + APIKey;
-    console.log(cityName);
+    
     console.log(event);
 
     //if statement that executes the ajax queries if the search icon is clicked on
     if (event.target.tagName === "I") {
-        
+
+        var cityNameSearch = $("#userInput").val();
         var userSearch = $("<button>");
-        userSearch.text(cityName);
+
+        userSearch.text(cityNameSearch);
         userSearchList.append($("<li>").append(userSearch));
 
-        //Ajax query that requests the temperature, humidity, and wind speed for weather data div.
-        $.ajax({
-            url: queryURL,
-            method: "GET"
-        }).then(function (respWeatherData) {
-            var lat = respWeatherData.coord.lat;
-            var long = respWeatherData.coord.lon;
-            var queryUVI = "http://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey + "&lat=" + lat + "&lon=" + long;
-            console.log(lat);
-            console.log(long);
-            console.log(respWeatherData);
-            $("#weatherData").append($("<h1>").text(respWeatherData.name));
-            $("#weatherData").append($("<p>").text("Temperature: " + respWeatherData.main.temp));
-            $("#weatherData").append($("<p>").text("Humidity: " + respWeatherData.main.humidity));
-            $("#weatherData").append($("<p>").text("Wind Speed: " + respWeatherData.wind.speed));
+        weatherDataQuery(APIKey, cityNameSearch);
+    }
 
-            $.ajax({
-                url: queryUVI,
-                method: "GET"
-            }).then(function (respUvi) {
-                console.log(respUvi);
-                $("#weatherData").append($("<p>").text("UV Index: " + respUvi.value));
-            });
-           
-        });
+    if (event.target.tagName === "BUTTON") {
+        
+        var cityNameButton = event.target.textContent;       
+        //Ajax query that requests the temperature, humidity, and wind speed for weather data div.
+        weatherDataQuery(APIKey, cityNameButton);         
 
     }
 });
+
+
+//     FUNCTIONS ARE BELOW THIS LINE
+//________________________________________________________
+
+//Function that performs an ajax query to get the UV index from open weather API.  It requires latitude and longitude as input in the api call.
+function uviQuery (apiKey, lat, long) {
+
+    var queryUVI = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + long;
+    
+    $.ajax({
+        url: queryUVI,
+        method: "GET"
+    }).then(function (respUvi) {
+        console.log(respUvi);
+        $("#weatherData").append($("<p>").text("UV Index: " + respUvi.value));
+    });
+}
+
+//Function that performs an ajax query to get the weather data from open weather API.  It requires a city name as the input call.
+function weatherDataQuery (apiKey, location) {
+
+    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + location + "&units=imperial&appid=" + apiKey;
+    
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function (respWeatherData) {
+        
+        // console.log(lat);
+        // console.log(long);
+        console.log(respWeatherData);
+
+        //This code writes the correct data from weather Data ajax query to weather data div. 
+        $("#weatherData").append($("<h1>").text(respWeatherData.name));
+        $("#weatherData").append($("<p>").text("Temperature: " + respWeatherData.main.temp));
+        $("#weatherData").append($("<p>").text("Humidity: " + respWeatherData.main.humidity));
+        $("#weatherData").append($("<p>").text("Wind Speed: " + respWeatherData.wind.speed));
+
+        //Ajax query to open weather API for UV index.  it requires latitude and longitude to make query.
+        uviQuery(apiKey, respWeatherData.coord.lat, respWeatherData.coord.lon);   
+    });
+    
+   
+}
 
