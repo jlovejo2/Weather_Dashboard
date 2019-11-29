@@ -1,0 +1,18 @@
+.header {
+    background-color: rgba(0,0,255, .6);
+}
+
+#weatherData {
+    border: 3px solid black;
+}
+#fiveDayForecast {
+    border: 3px solid black;
+}
+
+.input-group {
+    border: 3px solid black;
+}
+
+.searchList {
+    list-style-type: none;
+}
