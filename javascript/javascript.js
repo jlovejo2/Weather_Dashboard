@@ -2,6 +2,7 @@ var h1 = $("h1");
 var header = $("#header");
 var container = $(".container-fluid");
 var userSearchList = $("<ul>").addClass("searchList");
+var numberOfForecastDays = 5;
 var searchedCityNames = {};
 
 //Adding text to header
@@ -53,7 +54,8 @@ init();
 //click event on the container area below jumbotron
 container.click(function () {
 
-    var APIKey = "21a347a444e91fd3f7484f44867c287b";
+    var openWeatherApiKey = "21a347a444e91fd3f7484f44867c287b";
+    var weatherBitApiKey = "37e64d6e85d5400586b0c8ab429e77b4";
 
     console.log(event);
 
@@ -69,15 +71,17 @@ container.click(function () {
         userSearchList.prepend($("<li>").prepend(userSearch));
 
         //calls the weatherDataQuery function with specified parameters
-        weatherDataQuery(APIKey, cityNameSearch);
+        weatherDataQuery(openWeatherApiKey, cityNameSearch);
         saveUserInput(cityNameSearch);
+        fiveDayForecastQuery(weatherBitApiKey, cityNameSearch, numberOfForecastDays);
     }
 
     if (event.target.tagName === "BUTTON") {
 
         var cityNameButton = event.target.textContent;
         //Ajax query that requests the temperature, humidity, and wind speed for weather data div.
-        weatherDataQuery(APIKey, cityNameButton);
+        weatherDataQuery(openWeatherApiKey, cityNameButton);
+        fiveDayForecastQuery(weatherBitApiKey, cityNameButton, numberOfForecastDays);
 
     }
 });
@@ -158,3 +162,18 @@ function init() {
 
 };
 
+function fiveDayForecastQuery(apiKey, location, numberOfDays) {
+    // var queryFiveDay = "https://api.openweathermap.org/data/2.5/forecast/daily?q=" + location + "&cnt=" + numberOfDays + "&units=imperial&key=" + apiKey;
+    var queryFiveDay = "https://api.weatherbit.io/v2.0/forecast/daily?city=" + location + "&days=" + numberOfDays + "&units=I&key=" + apiKey;
+
+    $.ajax({
+        url: queryFiveDay,
+        method: "GET"
+    }).then(function(respFiveDay) {
+        console.log(respFiveDay);
+
+        // $.
+
+        // $("#fiveDayForecast").
+    });
+}
