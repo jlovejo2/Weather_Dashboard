@@ -9,6 +9,11 @@
     border: 3px solid black;
 }
 
+.fiveDayForecastEl {
+    background-color: rgba(0,0,255, .6);
+    width: 80%;
+}
+
 .input-group {
     border: 3px solid black;
 }

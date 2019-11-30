@@ -169,11 +169,34 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
     $.ajax({
         url: queryFiveDay,
         method: "GET"
-    }).then(function(respFiveDay) {
+    }).then(function (respFiveDay) {
         console.log(respFiveDay);
 
-        // $.
+        $.each(respFiveDay.data, function (index) {
+            var date = $("<h3>").text(respFiveDay.data[index].datetime);
+            var highTemp = $("<p>").text("High Temp(F): " + respFiveDay.data[index].high_temp);
+            var iconCode = respFiveDay.data[index].weather.icon
+            var lowTemp = $("<p>").text("Low Temp(F): " + respFiveDay.data[index].low_temp);
+            var humidity = $("<p>").text("Humidity(%): " + respFiveDay.data[index].rh);
+            var columnDiv = $("<div>").addClass("fiveDayForecastEl col-lg-2 col-md-2 col-sm-6 p-2 m-4")
 
-        // $("#fiveDayForecast").
+            $("#fiveDayForecast").append(columnDiv.append(date));
+            
+            weatherBitIconQuery(iconCode, columnDiv);
+
+            $("#fiveDayForecast").append(columnDiv.append(highTemp, lowTemp, humidity));
+
+        });
+
     });
-}
+
+};
+
+function weatherBitIconQuery(iconCode, iconDiv) {
+    
+    var linkIconImg = "https://www.weatherbit.io/static/img/icons/" + iconCode + ".png";
+    var iconImg = $("<img>").attr({"src": linkIconImg, "alt": "Weather Icon"});
+
+        $("#fiveDayForecast").append(iconDiv.append(iconImg));
+
+};
