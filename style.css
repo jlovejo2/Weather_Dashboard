@@ -18,16 +18,24 @@ body {
    
 }
 
+.userSearchButton {
+    width: 90%;
+}
+
 #weatherData {
     border: 3px solid black;
+    color: white;
+    width: 50%;
 }
 #fiveDayForecast {
     border: 3px solid black;
+    width: 90%;
 }
 
 .fiveDayForecastEl {
-    background-color: rgb(0, 233, 233);
-    width: 80%;
+    background-color: rgb(19, 2, 252);
+    color: white;
+    width: 100%;
     margin: 5px;
     border-radius: 20px;
 }

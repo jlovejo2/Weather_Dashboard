@@ -22,7 +22,7 @@ var searchBar1 = $("<div>");
 var searchBar2 = $("<div>");
 searchBar1.addClass("input-group md-form form-1 pl-0");
 searchBar2.addClass("input-group-prepend");
-searchBar2.append($("<span>").attr({ "class": "input-group-text cyan lighten-2", "id": "basic-text1" }).append($("<i>").attr({ "class": "fa fa-search text-white", "aria-hidden": "true" })));
+searchBar2.append($("<span>").attr({ "class": "input-group-text cyan lighten-2", "id": "basic-text1" }).append($("<i>").attr({ "class": "fas fa-search text-white", "aria-hidden": "true" })));
 searchBar1.append(searchBar2);
 firstCol.append(searchBar1);
 searchBar1.append($("<input>").attr({ "class": "form-control my-0 py-1", "type": "text", "id": "userInput", "placeholder": "Search", "aria-label": "Search" }));
@@ -48,7 +48,6 @@ $("#mainContent").append(secondCol);
 $("#columnTwo").append($("<div>").addClass("row").attr({"id": "weatherData","class":"p-3"}));
 $("#columnTwo").append($("<div>").addClass("row").attr({"id": "fiveDayForecast", "class": "p-3"}));
 
-
 init();
 
 //click event on the container area below jumbotron
@@ -63,12 +62,8 @@ container.click(function () {
     if (event.target.tagName === "I") {
 
         var cityNameSearch = $("#userInput").val();
-        var userSearch = $("<button>");
-
-        //this code takes the button created in variable above and puts city Name as text within that button.
-        //then that button is added as a list item to userSearchList unordered list tag. 
-        userSearch.text(cityNameSearch);
-        userSearchList.prepend($("<li>").prepend(userSearch));
+                
+        renderSearchButtons(cityNameSearch);
 
         //calls the weatherDataQuery function with specified parameters
         weatherDataQuery(openWeatherApiKey, cityNameSearch);
@@ -89,6 +84,18 @@ container.click(function () {
 
 //     FUNCTIONS ARE BELOW THIS LINE
 //________________________________________________________
+
+function renderSearchButtons (buttonTextContent) {
+
+        var userSearch = $("<button>").addClass("userSearchButton");
+        var closeButton = $("<button>").addClass("btn btn-primary btn-sm");
+
+        //this code takes the button created in variable above and puts city Name as text within that button.
+        //then that button is added as a list item to userSearchList unordered list tag. 
+        closeButton.text("X");
+        userSearch.text(buttonTextContent);
+        userSearchList.prepend($("<li>").prepend(userSearch, closeButton));
+}
 
 //Function that performs an ajax query to get the UV index from open weather API.  It requires latitude and longitude as input in the api call.
 function uviQuery(apiKey, lat, long) {
@@ -156,10 +163,7 @@ function init() {
 
     $.each(storedCities, function (value) {
 
-        var button = $("<button>")
-
-        button.text(value);
-        userSearchList.append($("<li>").append(button));
+        renderSearchButtons(value);
     });
 
 };
