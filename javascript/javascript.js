@@ -45,8 +45,8 @@ secondCol.attr("id", "columnTwo");
 $("#mainContent").append(secondCol);
 
 //add rows to larger column (first column)
-$("#columnTwo").append($("<div>").addClass("row").attr("id", "weatherData"));
-$("#columnTwo").append($("<div>").addClass("row").attr("id", "fiveDayForecast"));
+$("#columnTwo").append($("<div>").addClass("row").attr({"id": "weatherData","class":"p-3"}));
+$("#columnTwo").append($("<div>").addClass("row").attr({"id": "fiveDayForecast", "class": "p-3"}));
 
 
 init();
@@ -121,12 +121,14 @@ function weatherDataQuery(apiKey, location) {
         $("#weatherData").empty();
         //This code writes the correct data from weather Data ajax query to weather data div. 
         $("#weatherData").append($("<h1>").text(respWeatherData.name));
+        openWeatherIconQuery(respWeatherData.weather[0].icon, $("#weatherData"));
         $("#weatherData").append($("<p>").text("Temperature: " + respWeatherData.main.temp));
         $("#weatherData").append($("<p>").text("Humidity: " + respWeatherData.main.humidity));
         $("#weatherData").append($("<p>").text("Wind Speed: " + respWeatherData.wind.speed));
 
         //Ajax query to open weather API for UV index.  it requires latitude and longitude to make query.
         uviQuery(apiKey, respWeatherData.coord.lat, respWeatherData.coord.lon);
+        
     });
 
 
@@ -172,13 +174,15 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
     }).then(function (respFiveDay) {
         console.log(respFiveDay);
 
+            $("#fiveDayForecast").empty();
+
         $.each(respFiveDay.data, function (index) {
             var date = $("<h3>").text(respFiveDay.data[index].datetime);
             var highTemp = $("<p>").text("High Temp(F): " + respFiveDay.data[index].high_temp);
             var iconCode = respFiveDay.data[index].weather.icon
             var lowTemp = $("<p>").text("Low Temp(F): " + respFiveDay.data[index].low_temp);
             var humidity = $("<p>").text("Humidity(%): " + respFiveDay.data[index].rh);
-            var columnDiv = $("<div>").addClass("fiveDayForecastEl col-lg-2 col-md-2 col-sm-6 p-2 m-4")
+            var columnDiv = $("<div>").addClass("fiveDayForecastEl col-lg-2 col-md-2 col-sm-6")
 
             $("#fiveDayForecast").append(columnDiv.append(date));
             
@@ -195,8 +199,15 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
 function weatherBitIconQuery(iconCode, iconDiv) {
     
     var linkIconImg = "https://www.weatherbit.io/static/img/icons/" + iconCode + ".png";
-    var iconImg = $("<img>").attr({"src": linkIconImg, "alt": "Weather Icon"});
+    var iconImg = $("<img>").attr({"src": linkIconImg, "alt": "Weather Icon", "id": "fiveDayForecastIcon"});
 
         $("#fiveDayForecast").append(iconDiv.append(iconImg));
 
 };
+
+function openWeatherIconQuery (iconCode, iconDiv) {
+   var openWeatherLink = "https://openweathermap.org/img/wn/" + iconCode + "@5xx.png";
+   var imgDiv = $("<img>").attr({"src": openWeatherLink, "alt": "Weather Icon", "id": "weatherDataIcon"});
+
+    $("#weatherData").append(iconDiv.append(imgDiv));
+}
