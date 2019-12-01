@@ -20,23 +20,22 @@ $("#mainContent").append(firstCol);
 //make div for searchbar in first column
 var searchBar1 = $("<div>");
 var searchBar2 = $("<div>");
-searchBar1.addClass("input-group md-form form-1 pl-0");
+searchBar1.addClass("input-group mb-3");
 searchBar2.addClass("input-group-prepend");
-searchBar2.append($("<span>").attr({ "class": "input-group-text cyan lighten-2", "id": "basic-text1" }).append($("<i>").attr({ "class": "fas fa-search text-white", "aria-hidden": "true" })));
+searchBar2.append($("<button>").attr({ "class": "btn btn-primary", "type": "button"}).append($("<i>").attr({ "class": "fas fa-search text-white", "aria-hidden": "true" })));
 searchBar1.append(searchBar2);
 firstCol.append(searchBar1);
-searchBar1.append($("<input>").attr({ "class": "form-control my-0 py-1", "type": "text", "id": "userInput", "placeholder": "Search", "aria-label": "Search" }));
+searchBar1.append($("<input>").attr({ "class": "form-control", "type": "text", "id": "userInput", "placeholder": "Search", "aria-label": "Search" }));
 
 //make ul for user searches to get listed in
 firstCol.append(userSearchList);
 
-{/* <div class="input-group md-form form-sm form-1 pl-0">
+{/* <div class="input-group mb-3">
   <div class="input-group-prepend">
-    <span class="input-group-text cyan lighten-2" id="basic-text1"><i class="fas fa-search text-white"
-        aria-hidden="true"></i></span>
+    <button class="btn btn-outline-secondary" type="button">Button</button>
   </div>
-  <input class="form-control my-0 py-1" type="text" placeholder="Search" aria-label="Search">
-</div> */}
+  <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+</div>*/}
 
 //make second column
 var secondCol = $("<div>");
@@ -45,8 +44,8 @@ secondCol.attr("id", "columnTwo");
 $("#mainContent").append(secondCol);
 
 //add rows to larger column (first column)
-$("#columnTwo").append($("<div>").addClass("row").attr({"id": "weatherData","class":"p-3"}));
-$("#columnTwo").append($("<div>").addClass("row").attr({"id": "fiveDayForecast", "class": "p-3"}));
+$("#columnTwo").append($("<div>").addClass("row").attr({"id": "weatherData","class":"row p-3"}));
+$("#columnTwo").append($("<div>").addClass("row").attr({"id": "fiveDayForecast", "class": "row p-3"}));
 
 init();
 
@@ -56,7 +55,7 @@ container.click(function () {
     var openWeatherApiKey = "21a347a444e91fd3f7484f44867c287b";
     var weatherBitApiKey = "37e64d6e85d5400586b0c8ab429e77b4";
 
-    console.log(event);
+    console.log(event.target.textContent);
 
     //if statement that executes the ajax queries if the search icon is clicked on
     if (event.target.tagName === "I") {
@@ -67,18 +66,30 @@ container.click(function () {
 
         //calls the weatherDataQuery function with specified parameters
         weatherDataQuery(openWeatherApiKey, cityNameSearch);
-        saveUserInput(cityNameSearch);
+        saveUserInput(cityNameSearch, cityNameSearch);
         fiveDayForecastQuery(weatherBitApiKey, cityNameSearch, numberOfForecastDays);
     }
 
-    if (event.target.tagName === "BUTTON") {
+    if (event.target.tagName === "BUTTON" && event.target.textContent !== "X") {
 
+        console.log("1");
         var cityNameButton = event.target.textContent;
         //Ajax query that requests the temperature, humidity, and wind speed for weather data div.
         weatherDataQuery(openWeatherApiKey, cityNameButton);
         fiveDayForecastQuery(weatherBitApiKey, cityNameButton, numberOfForecastDays);
-
+    
     }
+
+    if (event.target.textContent === "X") {
+        var keyName = event.target.parentElement.children[0].textContent;
+        
+        console.log(keyName);
+        console.log(searchedCityNames);
+        // searchedCityNames.splice(keyName,1);
+        // init();
+        // event.toElement.closest("li").remove();
+    }
+    
 });
 
 
@@ -107,7 +118,7 @@ function uviQuery(apiKey, lat, long) {
         method: "GET"
     }).then(function (respUvi) {
         console.log(respUvi);
-        $("#weatherData").append($("<p>").text("UV Index: " + respUvi.value));
+        $("#weatherDataList").append($("<p>").text("UV Index: " + respUvi.value));
     });
 }
 
@@ -120,7 +131,7 @@ function weatherDataQuery(apiKey, location) {
         url: queryURL,
         method: "GET"
     }).then(function (respWeatherData) {
-
+      
         // console.log(lat);
         // console.log(long);
         console.log(respWeatherData);
@@ -129,10 +140,10 @@ function weatherDataQuery(apiKey, location) {
         //This code writes the correct data from weather Data ajax query to weather data div. 
         $("#weatherData").append($("<h1>").text(respWeatherData.name));
         openWeatherIconQuery(respWeatherData.weather[0].icon, $("#weatherData"));
-        $("#weatherData").append($("<p>").text("Temperature: " + respWeatherData.main.temp));
-        $("#weatherData").append($("<p>").text("Humidity: " + respWeatherData.main.humidity));
-        $("#weatherData").append($("<p>").text("Wind Speed: " + respWeatherData.wind.speed));
-
+        $("#weatherData").append($("<ul>").attr("id","weatherDataList"));
+        $("#weatherDataList").append($("<li>").text("Temperature: " + respWeatherData.main.temp));
+        $("#weatherDataList").append($("<li>").text("Humidity: " + respWeatherData.main.humidity));
+        $("#weatherDataList").append($("<li>").text("Wind Speed: " + respWeatherData.wind.speed));
         //Ajax query to open weather API for UV index.  it requires latitude and longitude to make query.
         uviQuery(apiKey, respWeatherData.coord.lat, respWeatherData.coord.lon);
         
@@ -142,9 +153,9 @@ function weatherDataQuery(apiKey, location) {
 }
 
 //This function saves every city name that is entered in search input to searchedCityNames array which is then saved to localStorage.
-function saveUserInput(location) {
+function saveUserInput(keyname, location) {
 
-    searchedCityNames[location] = location;
+    searchedCityNames[keyname] = location;
 
     localStorage.setItem("searchedCityNames", JSON.stringify(searchedCityNames));
 }
@@ -210,7 +221,7 @@ function weatherBitIconQuery(iconCode, iconDiv) {
 };
 
 function openWeatherIconQuery (iconCode, iconDiv) {
-   var openWeatherLink = "https://openweathermap.org/img/wn/" + iconCode + "@5xx.png";
+   var openWeatherLink = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
    var imgDiv = $("<img>").attr({"src": openWeatherLink, "alt": "Weather Icon", "id": "weatherDataIcon"});
 
     $("#weatherData").append(iconDiv.append(imgDiv));
