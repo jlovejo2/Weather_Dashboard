@@ -85,9 +85,10 @@ container.click(function () {
         
         console.log(keyName);
         console.log(searchedCityNames);
-        // searchedCityNames.splice(keyName,1);
-        // init();
-        // event.toElement.closest("li").remove();
+        delete searchedCityNames[keyName];
+        console.log(searchedCityNames);
+        event.toElement.closest("li").remove();
+        localStorage.setItem("searchedCityNames", JSON.stringify(searchedCityNames));
     }
     
 });
@@ -95,6 +96,8 @@ container.click(function () {
 
 //     FUNCTIONS ARE BELOW THIS LINE
 //________________________________________________________
+
+
 
 function renderSearchButtons (buttonTextContent) {
 

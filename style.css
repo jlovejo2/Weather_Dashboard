@@ -27,6 +27,11 @@ body {
     color: white;
     width: 50%;
 }
+
+#weatherDataList {
+    list-style-type: none;
+}
+
 #fiveDayForecast {
     border: 3px solid black;
     width: 90%;
@@ -53,5 +58,5 @@ body {
 }
 
 #weatherDataIcon {
-    float: right;
+    float: left;
 }
