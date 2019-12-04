@@ -2,7 +2,11 @@ var h1 = $("h1");
 var header = $("#header");
 var container = $(".container-fluid");
 var userSearchList = $("<ul>").addClass("searchList");
-var numberOfForecastDays = 5;
+
+var numberOfForecastDays = 6;
+var openWeatherApiKey = "21a347a444e91fd3f7484f44867c287b";
+var weatherBitApiKey = "37e64d6e85d5400586b0c8ab429e77b4";
+
 var searchedCityNames = {};
 
 //Adding text to header
@@ -19,23 +23,16 @@ $("#mainContent").append(firstCol);
 
 //make div for searchbar in first column
 var searchBar1 = $("<div>");
-var searchBar2 = $("<div>");
+// var searchBar2 = $("<div>");
 searchBar1.addClass("input-group mb-3");
-searchBar2.addClass("input-group-prepend");
-searchBar2.append($("<button>").attr({ "class": "btn btn-primary", "type": "button"}).append($("<i>").attr({ "class": "fas fa-search text-white", "aria-hidden": "true" })));
-searchBar1.append(searchBar2);
+// searchBar2.addClass("input-group-prepend"):
+searchBar1.append($("<button>").attr({ "class": "btn btn-primary", "type": "button"}).append($("<i>").attr({ "class": "fas fa-search text-white", "aria-hidden": "true" })));
+// searchBar1.append(searchBar2);
 firstCol.append(searchBar1);
 searchBar1.append($("<input>").attr({ "class": "form-control", "type": "text", "id": "userInput", "placeholder": "Search", "aria-label": "Search" }));
 
 //make ul for user searches to get listed in
 firstCol.append(userSearchList);
-
-{/* <div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <button class="btn btn-outline-secondary" type="button">Button</button>
-  </div>
-  <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
-</div>*/}
 
 //make second column
 var secondCol = $("<div>");
@@ -49,11 +46,35 @@ $("#columnTwo").append($("<div>").addClass("row").attr({"id": "fiveDayForecast",
 
 init();
 
+//click event on the container when a key is released up
+container.on("keyup", function(e){
+
+    //if statement that executes ajax queries if the enter key is pressed and released up in the userInput field
+    console.log(e.keyCode)
+    if (e.keyCode === 13 && $("#userInput").val() === "") {
+        console.log("Pressed enter and no user input");
+         $("#myModal").modal();
+ 
+     }
+
+    else if (e.keyCode === 13) {
+        console.log("it works");
+        var cityNameSearch = $("#userInput").val();
+                
+        renderSearchButtons(cityNameSearch);
+
+        //calls the weatherDataQuery function with specified parameters
+        weatherDataQuery(openWeatherApiKey, cityNameSearch);
+        saveUserInput(cityNameSearch, cityNameSearch);
+        fiveDayForecastQuery(weatherBitApiKey, cityNameSearch, numberOfForecastDays);
+    }
+    
+
+    
+});
+
 //click event on the container area below jumbotron
 container.click(function () {
-
-    var openWeatherApiKey = "21a347a444e91fd3f7484f44867c287b";
-    var weatherBitApiKey = "37e64d6e85d5400586b0c8ab429e77b4";
 
     console.log(event.target.textContent);
 
@@ -195,13 +216,18 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
             $("#fiveDayForecast").empty();
 
         $.each(respFiveDay.data, function (index) {
-            var date = $("<h3>").text(respFiveDay.data[index].datetime);
-            var highTemp = $("<p>").text("High Temp(F): " + respFiveDay.data[index].high_temp);
-            var iconCode = respFiveDay.data[index].weather.icon
-            var lowTemp = $("<p>").text("Low Temp(F): " + respFiveDay.data[index].low_temp);
-            var humidity = $("<p>").text("Humidity(%): " + respFiveDay.data[index].rh);
+            var xIndex = index + 1;
+            var date = $("<h3>").text(respFiveDay.data[xIndex].valid_date);
+            var highTemp = $("<p>").text("High Temp(F): " + respFiveDay.data[xIndex].high_temp);
+            var iconCode = respFiveDay.data[xIndex].weather.icon
+            var lowTemp = $("<p>").text("Low Temp(F): " + respFiveDay.data[xIndex].low_temp);
+            var humidity = $("<p>").text("Humidity(%): " + respFiveDay.data[xIndex].rh);
             var columnDiv = $("<div>").addClass("fiveDayForecastEl col-lg-2 col-md-2 col-sm-6")
 
+            // var newDateFormat = date.splice(5,5) + "-" + date.splice(0,4);
+
+            // var newDate = respFiveDay.data[xIndex].valid_date;
+            // console.log(newDate.slice(1,1));
             $("#fiveDayForecast").append(columnDiv.append(date));
             
             weatherBitIconQuery(iconCode, columnDiv);
@@ -229,3 +255,31 @@ function openWeatherIconQuery (iconCode, iconDiv) {
 
     $("#weatherData").append(iconDiv.append(imgDiv));
 }
+
+function modalMustEnterCity () {
+
+
+    $("#myModal").modal('show');
+
+}
+    // $("<div>").attr({"class":"modal","tabindex":"-1","role":"dialog"});
+    // $("<div>").attr({"class":"modal-dialog","role":"document"});
+
+//    <div class="modal" tabindex="-1" role="dialog">
+//   <div class="modal-dialog" role="document">
+//     <div class="modal-content">
+//       <div class="modal-header">
+//         <h5 class="modal-title">Modal title</h5>
+//         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+//           <span aria-hidden="true">&times;</span>
+//         </button>
+//       </div>
+//       <div class="modal-body">
+//         <p>Modal body text goes here.</p>
+//       </div>
+//       <div class="modal-footer">
+//         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+//       </div>
+//     </div>
+//   </div>
+// </div>

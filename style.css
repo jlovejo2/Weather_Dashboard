@@ -1,4 +1,4 @@
-body html {
+body html .container-fluid {
     height: 100%;
 }
 
@@ -14,8 +14,11 @@ body {
     background-color: rgba(0,0,255, .6);
 }
 
+.lead {
+}
+
 .container-fluid {
-   
+   height: 60%;
 }
 
 .userSearchButton {
@@ -23,7 +26,6 @@ body {
 }
 
 #weatherData {
-    border: 3px solid black;
     color: white;
     width: 50%;
 }
@@ -33,7 +35,7 @@ body {
 }
 
 #fiveDayForecast {
-    border: 3px solid black;
+    
     width: 90%;
 }
 
@@ -59,4 +61,19 @@ body {
 
 #weatherDataIcon {
     float: left;
+}
+
+#modal {
+    display: hidden;
+}
+
+
+.border {
+    border: 3px solid black;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
 }

@@ -32,3 +32,12 @@ This project was created with:
 * jquery
 * openweathermap.org (API) - current weather data
 * weatherbit.io (API) - five day forecast
+
+## Helpful Hints
+
+## Specific Change Made
+* used weatherbit.io for the 5 day forecast query
+
+## Functions Used
+
+## Known Issues With Code
