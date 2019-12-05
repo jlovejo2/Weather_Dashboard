@@ -1,4 +1,4 @@
-body html .container-fluid {
+body html{ 
     height: 100%;
 }
 
@@ -12,13 +12,14 @@ body {
 
 .header {
     background-color: rgba(0,0,255, .6);
+    height: 30%;
 }
 
 .lead {
 }
 
 .container-fluid {
-   height: 60%;
+   height: 65%;
 }
 
 .userSearchButton {
@@ -35,7 +36,6 @@ body {
 }
 
 #fiveDayForecast {
-    margin-right: 15px:
     width: 100%;
 }
 
@@ -63,11 +63,6 @@ body {
     /* float: left: */
 }
 
-#modal {
-    display: hidden;
-}
-
-
 .border {
     border: 3px solid black;
 }
@@ -76,8 +71,9 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
+    /* margin-top: 100px; */
 }
 
 .backgroundData {
-    background-color: rgba(255,255,255, .5);
+    background-color: rgba(128, 128, 128, .7);
 }

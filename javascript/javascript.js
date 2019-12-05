@@ -12,8 +12,9 @@ var searchedCityNames = {};
 //Adding text to header
 h1.text("Weather Map").addClass("header");
 header.append(h1);
+$(".container").append($("<h1>").text(moment().format("MMMM Do YYYY")));
 
-container.append($("<div>").addClass("row").attr("id", "mainContent"));
+container.append($("<div>").attr({"class":"row justify-content-center","id": "mainContent",}));
 
 //make first column
 var firstCol = $("<div>");
@@ -41,8 +42,8 @@ secondCol.attr("id", "columnTwo");
 $("#mainContent").append(secondCol);
 
 //add rows to larger column (first column)
-$("#columnTwo").append($("<div>").attr({ "id": "weatherData", "class": "row justify-content-center p-1 mb-3" }));
-$("#columnTwo").append($("<div>").attr({ "id": "fiveDayForecast", "class": "row justify-content-center" }));
+$("#columnTwo").append($("<div>").attr({ "id": "weatherData", "class": "row justify-content-center p-1 mb-3 ml-1" }));
+$("#columnTwo").append($("<div>").attr({ "id": "fiveDayForecast", "class": "row justify-content-center ml-1" }));
 
 
 
@@ -241,8 +242,8 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
 
         $("#fiveDayForecast").empty();
 
-        var fivedayRowDiv1 = $("<div>").attr("class", "row");
-        var fivedayRowDiv2 = $("<div>").attr("class", "row");
+        var fivedayRowDiv1 = $("<div>").attr("class", "row ml-2");
+        var fivedayRowDiv2 = $("<div>").attr("class", "row ml-2");
 
         $("#fiveDayForecast").append(fivedayRowDiv1.append($("<h3>").text("Five Day Forecast")));
         $("#fiveDayForecast").append(fivedayRowDiv2);
