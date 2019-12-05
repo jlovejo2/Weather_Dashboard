@@ -26,8 +26,8 @@ body {
 }
 
 #weatherData {
-    color: white;
-    width: 50%;
+    color:black;
+    width: 100%;
 }
 
 #weatherDataList {
@@ -35,8 +35,8 @@ body {
 }
 
 #fiveDayForecast {
-    
-    width: 90%;
+    margin-right: 15px:
+    width: 100%;
 }
 
 .fiveDayForecastEl {
@@ -60,7 +60,7 @@ body {
 }
 
 #weatherDataIcon {
-    float: left;
+    /* float: left: */
 }
 
 #modal {
@@ -76,4 +76,8 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+.backgroundData {
+    background-color: rgba(255,255,255, .5);
 }

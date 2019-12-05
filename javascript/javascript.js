@@ -41,8 +41,8 @@ secondCol.attr("id", "columnTwo");
 $("#mainContent").append(secondCol);
 
 //add rows to larger column (first column)
-$("#columnTwo").append($("<div>").addClass("row").attr({ "id": "weatherData", "class": "row p-3" }));
-$("#columnTwo").append($("<div>").addClass("row").attr({ "id": "fiveDayForecast", "class": "row p-3" }));
+$("#columnTwo").append($("<div>").attr({ "id": "weatherData", "class": "row justify-content-center p-1 mb-3" }));
+$("#columnTwo").append($("<div>").attr({ "id": "fiveDayForecast", "class": "row justify-content-center" }));
 
 
 
@@ -72,30 +72,6 @@ container.on("keyup", function (e) {
 
         $("#myModal").modal();
 
-        //          <div class="modal" id="myModal">
-        //              <div class="modal-dialog">
-        //                  <div class="modal-content">
-
-        //                  <!-- Modal Header -->
-        //                  <div class="modal-header">
-        //                      <h4 class="modal-title">Modal Heading</h4>
-        //                      <button type="button" class="close" data-dismiss="modal">&times;</button>
-        //                  </div>
-
-        //                  <!-- Modal body -->
-        //                  <div class="modal-body">
-        //                      Modal body..
-        //                  </div>
-
-        //                  <!-- Modal footer -->
-        //                  <div class="modal-footer">
-        //                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        //                  </div>
-
-        //                  </div>
-        //              </div>
-        //          </div>
-
     }
 
     else if (e.keyCode === 13) {
@@ -109,8 +85,6 @@ container.on("keyup", function (e) {
         saveUserInput(cityNameSearch, cityNameSearch);
         fiveDayForecastQuery(weatherBitApiKey, cityNameSearch, numberOfForecastDays);
     }
-
-
 
 });
 
@@ -160,7 +134,6 @@ container.click(function () {
 //________________________________________________________
 
 
-
 function renderSearchButtons(buttonTextContent) {
 
     var userSearch = $("<button>").addClass("userSearchButton");
@@ -171,7 +144,7 @@ function renderSearchButtons(buttonTextContent) {
     closeButton.text("X");
     userSearch.text(buttonTextContent);
     userSearchList.prepend($("<li>").prepend(userSearch, closeButton));
-}
+};
 
 //Function that performs an ajax query to get the UV index from open weather API.  It requires latitude and longitude as input in the api call.
 function uviQuery(apiKey, lat, long) {
@@ -183,9 +156,9 @@ function uviQuery(apiKey, lat, long) {
         method: "GET"
     }).then(function (respUvi) {
         console.log(respUvi);
-        $("#weatherDataList").append($("<p>").text("UV Index: " + respUvi.value));
+        $("#weatherDataList").append($("<li>").text("UV Index: " + respUvi.value));
     });
-}
+};
 
 //Function that performs an ajax query to get the weather data from open weather API.  It requires a city name as the input call.
 function weatherDataQuery(apiKey, location) {
@@ -201,21 +174,30 @@ function weatherDataQuery(apiKey, location) {
         // console.log(long);
         console.log(respWeatherData);
 
+      
+
         $("#weatherData").empty();
+        var rowDiv1 = $("<div>").attr("class", "row");
+        var rowDiv2 = $("<div>").attr("class", "row");
+        var colDiv1 = $("<div>").attr("class","col-lg-12 col-md-12 col-sm-12 col-xs-12");
+        var colDiv2 = $("<div>").attr("class","col-lg-12 col-md-12 col-sm-12 col-xs-12");
+        
         //This code writes the correct data from weather Data ajax query to weather data div. 
-        $("#weatherData").append($("<h1>").text(respWeatherData.name));
-        openWeatherIconQuery(respWeatherData.weather[0].icon, $("#weatherData"));
-        $("#weatherData").append($("<ul>").attr("id", "weatherDataList"));
+        $("#weatherData").append(rowDiv1.append(colDiv1.append($("<h1>").text(respWeatherData.name))));
+        
+        $("#weatherData").append(rowDiv2.append(colDiv1.append($("<ul>").attr("id", "weatherDataList"))));
         $("#weatherDataList").append($("<li>").text("Temperature: " + respWeatherData.main.temp));
         $("#weatherDataList").append($("<li>").text("Humidity: " + respWeatherData.main.humidity));
         $("#weatherDataList").append($("<li>").text("Wind Speed: " + respWeatherData.wind.speed));
+        openWeatherIconQuery(respWeatherData.weather[0].icon, colDiv2, rowDiv1);
         //Ajax query to open weather API for UV index.  it requires latitude and longitude to make query.
         uviQuery(apiKey, respWeatherData.coord.lat, respWeatherData.coord.lon);
+        $("#weatherData").addClass("backgroundData");
 
     });
 
 
-}
+};
 
 //This function saves every city name that is entered in search input to searchedCityNames array which is then saved to localStorage.
 function saveUserInput(keyname, location) {
@@ -223,13 +205,15 @@ function saveUserInput(keyname, location) {
     searchedCityNames[keyname] = location;
 
     localStorage.setItem("searchedCityNames", JSON.stringify(searchedCityNames));
-}
+};
 
 //This function pulls the information from localStorage searchedCityNames array and generates the buttons for them.
 function init() {
 
     var storedCities = JSON.parse(localStorage.getItem("searchedCityNames"));
 
+    $("#weatherData").removeClass("backgroundData");
+    $("#fiveDayForecast").removeClass("backgroundData");
 
     // If events weren't retrieved from localStorage, set the storedCities equal to searchedCityNames.
     if (storedCities !== null) {
@@ -244,6 +228,7 @@ function init() {
 
 };
 
+
 function fiveDayForecastQuery(apiKey, location, numberOfDays) {
     // var queryFiveDay = "https://api.openweathermap.org/data/2.5/forecast/daily?q=" + location + "&cnt=" + numberOfDays + "&units=imperial&key=" + apiKey;
     var queryFiveDay = "https://api.weatherbit.io/v2.0/forecast/daily?city=" + location + "&days=" + numberOfDays + "&units=I&key=" + apiKey;
@@ -256,6 +241,13 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
 
         $("#fiveDayForecast").empty();
 
+        var fivedayRowDiv1 = $("<div>").attr("class", "row");
+        var fivedayRowDiv2 = $("<div>").attr("class", "row");
+
+        $("#fiveDayForecast").append(fivedayRowDiv1.append($("<h3>").text("Five Day Forecast")));
+        $("#fiveDayForecast").append(fivedayRowDiv2);
+        $("#fiveDayForecast").addClass("backgroundData");
+
         $.each(respFiveDay.data, function (index) {
             var xIndex = index + 1;
             var date = $("<h3>").text(respFiveDay.data[xIndex].valid_date);
@@ -263,17 +255,18 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
             var iconCode = respFiveDay.data[xIndex].weather.icon
             var lowTemp = $("<p>").text("Low Temp(F): " + respFiveDay.data[xIndex].low_temp);
             var humidity = $("<p>").text("Humidity(%): " + respFiveDay.data[xIndex].rh);
-            var columnDiv = $("<div>").addClass("fiveDayForecastEl col-lg-2 col-md-2 col-sm-6")
+            
+            var columnDiv = $("<div>").addClass("fiveDayForecastEl col-xl-2 col-lg-4 col-md-4 col-sm-4 col-xs-6");
 
             // var newDateFormat = date.splice(5,5) + "-" + date.splice(0,4);
 
             // var newDate = respFiveDay.data[xIndex].valid_date;
             // console.log(newDate.slice(1,1));
-            $("#fiveDayForecast").append(columnDiv.append(date));
+            fivedayRowDiv2.append(columnDiv.append(date));
 
-            weatherBitIconQuery(iconCode, columnDiv);
+            weatherBitIconQuery(iconCode, columnDiv, fivedayRowDiv2);
 
-            $("#fiveDayForecast").append(columnDiv.append(highTemp, lowTemp, humidity));
+            fivedayRowDiv2.append(columnDiv.append(highTemp, lowTemp, humidity));
 
         });
 
@@ -281,46 +274,29 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
 
 };
 
-function weatherBitIconQuery(iconCode, iconDiv) {
+
+function weatherBitIconQuery(iconCode, iconDiv, fivedayRowDiv2) {
 
     var linkIconImg = "https://www.weatherbit.io/static/img/icons/" + iconCode + ".png";
     var iconImg = $("<img>").attr({ "src": linkIconImg, "alt": "Weather Icon", "id": "fiveDayForecastIcon" });
 
-    $("#fiveDayForecast").append(iconDiv.append(iconImg));
+    fivedayRowDiv2.append(iconDiv.append(iconImg));
 
 };
 
-function openWeatherIconQuery(iconCode, iconDiv) {
+
+function openWeatherIconQuery(iconCode, iconColDiv, iconRowDiv) {
     var openWeatherLink = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
     var imgDiv = $("<img>").attr({ "src": openWeatherLink, "alt": "Weather Icon", "id": "weatherDataIcon" });
+    
+    $("#weatherData").append(iconRowDiv.append(iconColDiv.append(imgDiv)));
 
-    $("#weatherData").append(iconDiv.append(imgDiv));
-}
+};
+
 
 function modalMustEnterCity() {
 
 
     $("#myModal").modal('show');
 
-}
-    // $("<div>").attr({"class":"modal","tabindex":"-1","role":"dialog"});
-    // $("<div>").attr({"class":"modal-dialog","role":"document"});
-
-//    <div class="modal" tabindex="-1" role="dialog">
-//   <div class="modal-dialog" role="document">
-//     <div class="modal-content">
-//       <div class="modal-header">
-//         <h5 class="modal-title">Modal title</h5>
-//         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-//           <span aria-hidden="true">&times;</span>
-//         </button>
-//       </div>
-//       <div class="modal-body">
-//         <p>Modal body text goes here.</p>
-//       </div>
-//       <div class="modal-footer">
-//         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-//       </div>
-//     </div>
-//   </div>
-// </div>
+};
