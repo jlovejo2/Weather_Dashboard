@@ -26,7 +26,7 @@ var searchBar1 = $("<div>");
 // var searchBar2 = $("<div>");
 searchBar1.addClass("input-group mb-3");
 // searchBar2.addClass("input-group-prepend"):
-searchBar1.append($("<button>").attr({ "class": "btn btn-primary", "type": "button"}).append($("<i>").attr({ "class": "fas fa-search text-white", "aria-hidden": "true" })));
+searchBar1.append($("<button>").attr({ "class": "btn btn-primary", "type": "button" }).append($("<i>").attr({ "class": "fas fa-search text-white", "aria-hidden": "true" })));
 // searchBar1.append(searchBar2);
 firstCol.append(searchBar1);
 searchBar1.append($("<input>").attr({ "class": "form-control", "type": "text", "id": "userInput", "placeholder": "Search", "aria-label": "Search" }));
@@ -41,26 +41,67 @@ secondCol.attr("id", "columnTwo");
 $("#mainContent").append(secondCol);
 
 //add rows to larger column (first column)
-$("#columnTwo").append($("<div>").addClass("row").attr({"id": "weatherData","class":"row p-3"}));
-$("#columnTwo").append($("<div>").addClass("row").attr({"id": "fiveDayForecast", "class": "row p-3"}));
+$("#columnTwo").append($("<div>").addClass("row").attr({ "id": "weatherData", "class": "row p-3" }));
+$("#columnTwo").append($("<div>").addClass("row").attr({ "id": "fiveDayForecast", "class": "row p-3" }));
+
+
+
+
 
 init();
 
 //click event on the container when a key is released up
-container.on("keyup", function(e){
+container.on("keyup", function (e) {
 
     //if statement that executes ajax queries if the enter key is pressed and released up in the userInput field
     console.log(e.keyCode)
     if (e.keyCode === 13 && $("#userInput").val() === "") {
         console.log("Pressed enter and no user input");
-         $("#myModal").modal();
- 
-     }
+
+        var modalDiv = $("<div>").attr({ "class": "modal", "id": "myModal" });
+        var modalDialog = $("<div>").attr({ "class": "modal-dialog" });
+        var modalContent = $("<div>").attr({ "class": "modal-content" });
+        var modalHeader = $("<div>").attr({ "class": "modal-header" });
+        var modalBody = $("<div>").attr({ "class": "modal-body" });
+
+        container.append(modalDiv.append(modalDialog.append(modalContent)));
+        modalHeader.append($("<h4>").text("Notification: please read."));
+        modalHeader.append($("<button>").attr({ "type": "button", "class": "close", "data-dismiss": "modal" }).text("X"));
+        modalBody.attr("class", "modal-body").text("Need to enter a city into search input");
+        modalContent.append(modalHeader, modalBody);
+
+        $("#myModal").modal();
+
+        //          <div class="modal" id="myModal">
+        //              <div class="modal-dialog">
+        //                  <div class="modal-content">
+
+        //                  <!-- Modal Header -->
+        //                  <div class="modal-header">
+        //                      <h4 class="modal-title">Modal Heading</h4>
+        //                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+        //                  </div>
+
+        //                  <!-- Modal body -->
+        //                  <div class="modal-body">
+        //                      Modal body..
+        //                  </div>
+
+        //                  <!-- Modal footer -->
+        //                  <div class="modal-footer">
+        //                      <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        //                  </div>
+
+        //                  </div>
+        //              </div>
+        //          </div>
+
+    }
 
     else if (e.keyCode === 13) {
         console.log("it works");
         var cityNameSearch = $("#userInput").val();
-                
+
         renderSearchButtons(cityNameSearch);
 
         //calls the weatherDataQuery function with specified parameters
@@ -68,9 +109,9 @@ container.on("keyup", function(e){
         saveUserInput(cityNameSearch, cityNameSearch);
         fiveDayForecastQuery(weatherBitApiKey, cityNameSearch, numberOfForecastDays);
     }
-    
 
-    
+
+
 });
 
 //click event on the container area below jumbotron
@@ -82,7 +123,7 @@ container.click(function () {
     if (event.target.tagName === "I") {
 
         var cityNameSearch = $("#userInput").val();
-                
+
         renderSearchButtons(cityNameSearch);
 
         //calls the weatherDataQuery function with specified parameters
@@ -98,12 +139,12 @@ container.click(function () {
         //Ajax query that requests the temperature, humidity, and wind speed for weather data div.
         weatherDataQuery(openWeatherApiKey, cityNameButton);
         fiveDayForecastQuery(weatherBitApiKey, cityNameButton, numberOfForecastDays);
-    
+
     }
 
     if (event.target.textContent === "X") {
         var keyName = event.target.parentElement.children[0].textContent;
-        
+
         console.log(keyName);
         console.log(searchedCityNames);
         delete searchedCityNames[keyName];
@@ -111,7 +152,7 @@ container.click(function () {
         event.toElement.closest("li").remove();
         localStorage.setItem("searchedCityNames", JSON.stringify(searchedCityNames));
     }
-    
+
 });
 
 
@@ -120,16 +161,16 @@ container.click(function () {
 
 
 
-function renderSearchButtons (buttonTextContent) {
+function renderSearchButtons(buttonTextContent) {
 
-        var userSearch = $("<button>").addClass("userSearchButton");
-        var closeButton = $("<button>").addClass("btn btn-primary btn-sm");
+    var userSearch = $("<button>").addClass("userSearchButton");
+    var closeButton = $("<button>").addClass("btn btn-primary btn-sm");
 
-        //this code takes the button created in variable above and puts city Name as text within that button.
-        //then that button is added as a list item to userSearchList unordered list tag. 
-        closeButton.text("X");
-        userSearch.text(buttonTextContent);
-        userSearchList.prepend($("<li>").prepend(userSearch, closeButton));
+    //this code takes the button created in variable above and puts city Name as text within that button.
+    //then that button is added as a list item to userSearchList unordered list tag. 
+    closeButton.text("X");
+    userSearch.text(buttonTextContent);
+    userSearchList.prepend($("<li>").prepend(userSearch, closeButton));
 }
 
 //Function that performs an ajax query to get the UV index from open weather API.  It requires latitude and longitude as input in the api call.
@@ -155,7 +196,7 @@ function weatherDataQuery(apiKey, location) {
         url: queryURL,
         method: "GET"
     }).then(function (respWeatherData) {
-      
+
         // console.log(lat);
         // console.log(long);
         console.log(respWeatherData);
@@ -164,13 +205,13 @@ function weatherDataQuery(apiKey, location) {
         //This code writes the correct data from weather Data ajax query to weather data div. 
         $("#weatherData").append($("<h1>").text(respWeatherData.name));
         openWeatherIconQuery(respWeatherData.weather[0].icon, $("#weatherData"));
-        $("#weatherData").append($("<ul>").attr("id","weatherDataList"));
+        $("#weatherData").append($("<ul>").attr("id", "weatherDataList"));
         $("#weatherDataList").append($("<li>").text("Temperature: " + respWeatherData.main.temp));
         $("#weatherDataList").append($("<li>").text("Humidity: " + respWeatherData.main.humidity));
         $("#weatherDataList").append($("<li>").text("Wind Speed: " + respWeatherData.wind.speed));
         //Ajax query to open weather API for UV index.  it requires latitude and longitude to make query.
         uviQuery(apiKey, respWeatherData.coord.lat, respWeatherData.coord.lon);
-        
+
     });
 
 
@@ -213,7 +254,7 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
     }).then(function (respFiveDay) {
         console.log(respFiveDay);
 
-            $("#fiveDayForecast").empty();
+        $("#fiveDayForecast").empty();
 
         $.each(respFiveDay.data, function (index) {
             var xIndex = index + 1;
@@ -229,7 +270,7 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
             // var newDate = respFiveDay.data[xIndex].valid_date;
             // console.log(newDate.slice(1,1));
             $("#fiveDayForecast").append(columnDiv.append(date));
-            
+
             weatherBitIconQuery(iconCode, columnDiv);
 
             $("#fiveDayForecast").append(columnDiv.append(highTemp, lowTemp, humidity));
@@ -241,22 +282,22 @@ function fiveDayForecastQuery(apiKey, location, numberOfDays) {
 };
 
 function weatherBitIconQuery(iconCode, iconDiv) {
-    
-    var linkIconImg = "https://www.weatherbit.io/static/img/icons/" + iconCode + ".png";
-    var iconImg = $("<img>").attr({"src": linkIconImg, "alt": "Weather Icon", "id": "fiveDayForecastIcon"});
 
-        $("#fiveDayForecast").append(iconDiv.append(iconImg));
+    var linkIconImg = "https://www.weatherbit.io/static/img/icons/" + iconCode + ".png";
+    var iconImg = $("<img>").attr({ "src": linkIconImg, "alt": "Weather Icon", "id": "fiveDayForecastIcon" });
+
+    $("#fiveDayForecast").append(iconDiv.append(iconImg));
 
 };
 
-function openWeatherIconQuery (iconCode, iconDiv) {
-   var openWeatherLink = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
-   var imgDiv = $("<img>").attr({"src": openWeatherLink, "alt": "Weather Icon", "id": "weatherDataIcon"});
+function openWeatherIconQuery(iconCode, iconDiv) {
+    var openWeatherLink = "https://openweathermap.org/img/wn/" + iconCode + "@2x.png";
+    var imgDiv = $("<img>").attr({ "src": openWeatherLink, "alt": "Weather Icon", "id": "weatherDataIcon" });
 
     $("#weatherData").append(iconDiv.append(imgDiv));
 }
 
-function modalMustEnterCity () {
+function modalMustEnterCity() {
 
 
     $("#myModal").modal('show');
