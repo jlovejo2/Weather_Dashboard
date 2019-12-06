@@ -15,9 +15,6 @@ body {
     height: 30%;
 }
 
-.lead {
-}
-
 .container-fluid {
    height: 65%;
 }
@@ -59,10 +56,6 @@ body {
     border: 1px solid black;
 }
 
-#weatherDataIcon {
-    /* float: left: */
-}
-
 .border {
     border: 3px solid black;
 }
@@ -71,7 +64,6 @@ body {
     position: fixed;
     bottom: 0;
     width: 100%;
-    /* margin-top: 100px; */
 }
 
 .backgroundData {
